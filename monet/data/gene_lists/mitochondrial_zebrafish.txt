@@ -1,0 +1,13 @@
+mt-atp6
+mt-atp8
+mt-co1
+mt-co2
+mt-co3
+mt-cyb
+mt-nd1
+mt-nd2
+mt-nd3
+mt-nd4
+mt-nd4l
+mt-nd5
+mt-nd6

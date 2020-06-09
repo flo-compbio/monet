@@ -8,6 +8,8 @@
 
 An open-source Python package for analyzing and integrating scRNA-Seq data using PCA-based latent spaces.
 
+Datasets from the [Monet paper (Wagner, 2020)](https://www.biorxiv.org/content/10.1101/2020.06.08.140673v1) can be found in a [separate repository](https://github.com/flo-compbio/monet-paper).
+
 Additional documentation is in the works! For questions and requests, please create an "issue" on GitHub.
 
 ## Getting started

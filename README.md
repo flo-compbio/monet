@@ -8,6 +8,8 @@
 
 An open-source Python package for analyzing and integrating scRNA-Seq data using PCA-based latent spaces.
 
+Additional documentation is in the works! For questions and requests, please create an "issue" on GitHub.
+
 ## Getting started
 
 ### Installation

@@ -8,7 +8,7 @@ from os import path
 
 root = 'monet'
 name = 'monet'
-version = '0.2.0'
+version = '0.2.1'
 
 here = path.abspath(path.dirname(__file__))
 description = ('Monet: An open-source Python package for analyzing and '
@@ -27,7 +27,7 @@ install_requires = [
 
 # get long description from file
 long_description = ''
-with io.open(path.join(here, 'README.rst'), encoding='UTF-8') as fh:
+with io.open(path.join(here, 'README.md'), encoding='UTF-8') as fh:
     long_description = fh.read()
 
 

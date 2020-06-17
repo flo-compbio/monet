@@ -30,12 +30,12 @@ The following tutorials demonstrate how to use Monet to perform various basic an
 
 #### Basics
 1. [Loading and saving expression data](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/010%20-%20Loading%20and%20saving%20expression%20data.ipynb)
-2. Importing data from scanpy *coming soon*
+2. Importing data from scanpy *(coming soon)*
 3. [Visualizing data with t-SNE](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/030%20-%20Visualizing%20data%20with%20t-SNE.ipynb)
 
 #### Clustering
-1. [Clustering data with Galapagos (t-SNE plus DBSCAN)](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/040%20-%20Clustering%20data%20with%20Galapagos%20%28t-SNE%20plus%20DBSCAN%29.ipynb) *link currently broken, apologies for the inconvenience*
-2. Annotating clusters with cell types *coming soon*
+1. [Clustering data with Galapagos (t-SNE plus DBSCAN)](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/040%20-%20Clustering%20data%20with%20Galapagos%20%28t-SNE%20plus%20DBSCAN%29.ipynb) *(link currently broken, apologies for the inconvenience)*
+2. Annotating clusters with cell types *(coming soon)*
 
 #### Denoising
 1. [Denoising data with ENHANCE](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/060%20-%20Denoising%20data%20with%20ENHANCE.ipynb)

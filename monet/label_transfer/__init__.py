@@ -3,4 +3,4 @@
 #
 # This file is part of Monet.
 
-from .mutual import *
+from .knn import transfer_knn

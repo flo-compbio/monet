@@ -38,5 +38,5 @@ def save_cell_labels(cell_labels: pd.Series, fpath: str,
     else:
         delimited_str = '"%s"-delimited' % sep
     cell_labels.to_csv(fpath, sep='\t')
-    _LOGGER.info('Saved labels for %d cells to %d plain-text file.',
+    _LOGGER.info('Saved labels for %d cells to %s plain-text file.',
                  cell_labels.size, delimited_str)

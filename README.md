@@ -26,7 +26,7 @@ $ pip install monet
 
 ### Tutorials
 
-The following tutorials demonstrate how to use Monet to perform various basic and advanced analsis tasks. The Jupyter electronic notebooks can be [downloaded from GitHub](https://github.com/flo-compbio/monet-tutorials).
+The following tutorials demonstrate how to use Monet to perform various basic and advanced analysis tasks. The Jupyter electronic notebooks can be [downloaded from GitHub](https://github.com/flo-compbio/monet-tutorials).
 
 #### Basics
 1. [Loading and saving expression data](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/010%20-%20Loading%20and%20saving%20expression%20data.ipynb)

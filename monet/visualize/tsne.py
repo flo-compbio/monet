@@ -17,7 +17,7 @@ import numpy as np
 from ..core import ExpMatrix
 from ..latent import PCAModel
 from ..latent import MonetModel
-from ..batch import correct_mnn
+from ..batch_correct import correct_mnn
 from .cells import plot_cells, plot_cells_random_order
 from .util import ACCESSIBLE_COLORS
 

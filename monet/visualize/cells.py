@@ -26,7 +26,7 @@ def plot_cells(
         scores: pd.DataFrame,
         profile: pd.Series = None,
         colorscale: str = 'RdBu',
-        reversescale: bool = False,
+        reversescale: bool = True,
         emin: Numeric = None, emax: Numeric = None,
         cell_labels: pd.Series = None,
         cluster_order: List[str] = None,
@@ -90,11 +90,14 @@ def plot_cells(
     
     if cluster_colors is None:
         cluster_colors = {}
-        for i, cluster in enumerate(cluster_order):
-            try:
-                cluster_colors[cluster] = DEFAULT_PLOTLY_COLORS[i]
-            except IndexError:
-                cluster_colors[cluster] = None
+
+    for i, cluster in enumerate(cluster_order):
+        if cluster in cluster_colors:
+            continue
+        try:
+            cluster_colors[cluster] = DEFAULT_PLOTLY_COLORS[i]
+        except IndexError:
+            cluster_colors[cluster] = None
 
     if cluster_labels is None:
         cluster_labels = dict([cluster, cluster] for cluster in cluster_order)

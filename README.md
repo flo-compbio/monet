@@ -41,9 +41,9 @@ The following tutorials demonstrate how to use Monet to perform various basic an
 1. [Denoising data with ENHANCE](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/060%20-%20Denoising%20data%20with%20ENHANCE.ipynb)
 
 #### Data integration
-1. [Train a Monet model (for integrative anlayses)](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/070%20-%20Train%20a%20Monet%20model%20%28for%20integrative%20analyses%29.ipynb)
-2. [Plot a batch-corrected t-SNE using mutual nearest neighbors (Haghverdi et al.%2C 2018)](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/080%20-%20Plot%20a%20batch-corrected%20t-SNE%20using%20mutual%20nearest%20neighbors%20%28Haghverdi%20et%20al.%2C%202018%29.ipynb)
-3. [Transfer labels between datasets using K-nearest neighbor classification](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/090%20-%20Label%20transfer%20using%20K-nearest%20neighbor%20classification.ipynb)
+1. [Training a Monet model (for integrative anlayses)](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/070%20-%20Train%20a%20Monet%20model%20%28for%20integrative%20analyses%29.ipynb)
+2. [Plotting a batch-corrected t-SNE using mutual nearest neighbors (Haghverdi et al.%2C 2018)](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/080%20-%20Plot%20a%20batch-corrected%20t-SNE%20using%20mutual%20nearest%20neighbors%20%28Haghverdi%20et%20al.%2C%202018%29.ipynb)
+3. [Transferring labels between datasets using K-nearest neighbor classification](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/090%20-%20Label%20transfer%20using%20K-nearest%20neighbor%20classification.ipynb)
 
 
 ## Copyright and License

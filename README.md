@@ -28,22 +28,22 @@ $ pip install monet
 
 The following tutorials demonstrate how to use Monet to perform various basic and advanced analsis tasks. The Jupyter electronic notebooks can be [downloaded from GitHub](https://github.com/flo-compbio/monet-tutorials).
 
-* **Basics**
-  1. [Loading and saving expression data](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/010%20-%20Loading%20and%20saving%20expression%20data.ipynb)
-  2. Importing data from scanpy *coming soon*
-  3. [Visualizing data with t-SNE](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/030%20-%20Visualizing%20data%20with%20t-SNE.ipynb)
+#### Basics
+1. [Loading and saving expression data](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/010%20-%20Loading%20and%20saving%20expression%20data.ipynb)
+2. Importing data from scanpy *coming soon*
+3. [Visualizing data with t-SNE](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/030%20-%20Visualizing%20data%20with%20t-SNE.ipynb)
 
-* **Clustering**
-  1. [Clustering data with Galapagos (t-SNE plus DBSCAN)](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/040%20-%20Clustering%20data%20with%20Galapagos%20%28t-SNE%20plus%20DBSCAN%29.ipynb) *link currently broken, apologies for the inconvenience*
-  2. Annotating clusters with cell types *coming soon*
+#### Clustering
+1. [Clustering data with Galapagos (t-SNE plus DBSCAN)](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/040%20-%20Clustering%20data%20with%20Galapagos%20%28t-SNE%20plus%20DBSCAN%29.ipynb) *link currently broken, apologies for the inconvenience*
+2. Annotating clusters with cell types *coming soon*
 
-* **Denoising**
-  1. [Denoising data with ENHANCE](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/060%20-%20Denoising%20data%20with%20ENHANCE.ipynb)
+#### Denoising
+1. [Denoising data with ENHANCE](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/060%20-%20Denoising%20data%20with%20ENHANCE.ipynb)
 
-* **Data integration**
-  1. [Train a Monet model (for integrative anlayses)](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/070%20-%20Train%20a%20Monet%20model%20%28for%20integrative%20analyses%29.ipynb)
-  2. [Plot a batch-corrected t-SNE using mutual nearest neighbors (Haghverdi et al.%2C 2018)](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/080%20-%20Plot%20a%20batch-corrected%20t-SNE%20using%20mutual%20nearest%20neighbors%20%28Haghverdi%20et%20al.%2C%202018%29.ipynb)
-  3. [Transfer labels between datasets using K-nearest neighbor classification](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/090%20-%20Label%20transfer%20using%20K-nearest%20neighbor%20classification.ipynb)
+#### Data integration
+1. [Train a Monet model (for integrative anlayses)](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/070%20-%20Train%20a%20Monet%20model%20%28for%20integrative%20analyses%29.ipynb)
+2. [Plot a batch-corrected t-SNE using mutual nearest neighbors (Haghverdi et al.%2C 2018)](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/080%20-%20Plot%20a%20batch-corrected%20t-SNE%20using%20mutual%20nearest%20neighbors%20%28Haghverdi%20et%20al.%2C%202018%29.ipynb)
+3. [Transfer labels between datasets using K-nearest neighbor classification](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/090%20-%20Label%20transfer%20using%20K-nearest%20neighbor%20classification.ipynb)
 
 
 ## Copyright and License

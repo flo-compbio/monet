@@ -6,6 +6,8 @@
 
 # Monet
 
+*Note: This repository contains the scRNA-Seq analysis software. For other tools named Monet, see [Disambiguation](#disambiguation)*
+
 Monet is an open-source Python package for analyzing and integrating scRNA-Seq data using PCA-based latent spaces.
 
 Datasets from the [Monet paper (Wagner, 2020)](https://www.biorxiv.org/content/10.1101/2020.06.08.140673v2) can be found in a [separate repository](https://github.com/flo-compbio/monet-paper).
@@ -51,6 +53,18 @@ The following tutorials demonstrate how to use Monet to perform various basic an
 Copyright (c) 2020 Florian Wagner
 
 Monet is licensed under an OSI-compliant 3-clause BSD license. For details, see [LICENSE](LICENSE).
+
+## Disambiguation
+
+The following other tools have been named Monet (styled either MONET or MONet):
+
+* Overview of the Model and Observation Evaluation Toolkit (MONET) ([Baker and Pan, 2017](https://www.mdpi.com/2073-4433/8/11/210)) \[[github](https://github.com/noaa-oar-arl/MONET)\]
+* MONet: Unsupervised Scene Decomposition and Representation ([Burgess et al., 2019](https://arxiv.org/abs/1901.11390)) \[[github](https://github.com/baudm/MONet-pytorch)\]
+* MONET: a toolbox integrating top-performing methods for network modularization ([Tomasoni et al., 2020](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btaa236/5818484)) \[[preprint](https://www.biorxiv.org/content/10.1101/611418v4)\] \[[github](https://github.com/BergmannLab/MONET)\]
+* Multi-Objective Cellular Evolutionary Algorithm (MONET) ([García-Nieto et al., 2019](https://www.sciencedirect.com/science/article/abs/pii/S1476927118305097)) \[[github](https://github.com/KhaosResearch/monet)\]
+* MONET: Multi-omic patient module detection by omic selection ([Rappoport et al., 2020](https://www.biorxiv.org/content/10.1101/2020.02.21.960062v1)) \[[github](https://github.com/Shamir-Lab/MONET)\]
+
+Thanks to Michał Krassowski ([@krassowski\_m](https://twitter.com/krassowski_m)) and Dr. Matthias Stahl ([@h\_i\_g\_s\_c\_h](https://twitter.com/h_i_g_s_c_h)) for providing these references.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->

@@ -17,6 +17,7 @@ import gzip
 import pandas as pd
 import numpy as np
 import scipy.io
+from scipy import sparse
 
 exp_profile = importlib.import_module('.exp_profile', package='monet.core')
 
@@ -175,6 +176,38 @@ class ExpMatrix(pd.DataFrame):
             matrix = self
 
         return matrix
+
+
+    @classmethod
+    def from_anndata(cls, adata, dtype=None):
+        """Import data from a Scanpy `AnnData` object."""
+
+        genes = adata.var_names.copy()
+        genes.name = 'Genes'
+
+        cells = adata.obs_names.copy()
+        cells.name = 'Cells'
+
+        data = adata.X.T.copy()
+
+        if dtype is not None:
+            # convert data type
+            data = data.astype(dtype)
+
+        if sparse.issparse(data):
+            # convert from sparse matrix
+            data = data.todense()
+
+        matrix = cls(data=data, genes=genes, cells=cells)
+
+        return matrix
+
+
+    def to_anndata(self):
+        """Export to `AnnData` object. (requires scanpy!)"""
+        from anndata import AnnData
+        adata = AnnData(self.T.copy())
+        return adata
 
 
     @classmethod

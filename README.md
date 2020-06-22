@@ -34,7 +34,7 @@ The following tutorials demonstrate how to use Monet to perform various basic an
 3. [Visualizing data with t-SNE](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/030%20-%20Visualizing%20data%20with%20t-SNE.ipynb)
 
 #### Clustering
-1. [Clustering data with Galapagos (t-SNE + DBSCAN)](https://nbviewer.jupyter.org/urls/dl.dropbox.com/s/purjoir090b911e/040%20-%20Clustering%20data%20with%20Galapagos%20%28t-SNE%20plus%20DBSCAN%29.ipynb)
+1. [Clustering data with Galapagos (t-SNE + DBSCAN)](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/040%20-%20Clustering%20data%20with%20Galapagos%20%28t-SNE%20plus%20DBSCAN%29.ipynb)
 2. Annotating clusters with cell types *(coming soon)*
 
 #### Denoising

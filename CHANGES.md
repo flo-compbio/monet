@@ -1,4 +1,4 @@
-## CHANGELOG
+## CHANGES
 
 ### v0.2.2 (2020-06-22)
 

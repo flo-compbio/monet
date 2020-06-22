@@ -8,11 +8,9 @@
 
 *Note: This repository contains the scRNA-Seq analysis software. For other tools named Monet, see [Disambiguation](#disambiguation)*
 
-Monet is an open-source Python package for analyzing and integrating scRNA-Seq data using PCA-based latent spaces.
+Monet is an open-source Python package for analyzing and integrating scRNA-Seq data using PCA-based latent spaces. Datasets from the [Monet paper (Wagner, 2020)](https://www.biorxiv.org/content/10.1101/2020.06.08.140673v2) can be found in a [separate repository](https://github.com/flo-compbio/monet-paper).
 
-Datasets from the [Monet paper (Wagner, 2020)](https://www.biorxiv.org/content/10.1101/2020.06.08.140673v2) can be found in a [separate repository](https://github.com/flo-compbio/monet-paper).
-
-Additional documentation is in the works! For questions and requests, please create an "issue" on GitHub.
+For questions and requests, please create an "issue" on GitHub. For a version history, see the [CHANGELOG](CHANGELOG).
 
 ## Getting started
 
@@ -32,7 +30,7 @@ The following tutorials demonstrate how to use Monet to perform various basic an
 
 #### Basics
 1. [Loading and saving expression data](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/010%20-%20Loading%20and%20saving%20expression%20data.ipynb)
-2. Importing data from scanpy *(coming soon)*
+2. [Importing/exporting data from/to Scanpy](https://nbviewer.jupyter.org/urls/dl.dropbox.com/s/i30w4g0egkhjt5o/020%20-%20Importing%20data%20from%20Scanpy%20and%20exporting%20data%20to%20Scanpy.ipynb)
 3. [Visualizing data with t-SNE](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/030%20-%20Visualizing%20data%20with%20t-SNE.ipynb)
 
 #### Clustering

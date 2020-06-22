@@ -27,6 +27,14 @@ def scale(matrix: ExpMatrix, transcript_count=None) -> ExpMatrix:
     return scaled_matrix
 
 
+def zscore(matrix: ExpMatrix) -> ExpMatrix:
+    """Converts the matrix to z-scores."""
+    mean = matrix.mean(axis=1)
+    std = matrix.std(axis=1, ddof=1)
+    zscore_matrix = ((matrix.T - mean)/std).T
+    return zscore_matrix
+
+
 def calculate_hash(df: pd.DataFrame) -> str:
     """Calculates a unique hash for a pandas `DataFrame`."""
     index_str = ','.join(str(e) for e in df.index)

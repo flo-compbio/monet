@@ -8,7 +8,7 @@ from os import path
 
 root = 'monet'
 name = 'monet'
-version = '0.2.1'
+version = '0.2.2'
 
 here = path.abspath(path.dirname(__file__))
 description = ('Monet: An open-source Python package for analyzing and '

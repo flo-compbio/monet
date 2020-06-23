@@ -16,6 +16,9 @@ For questions and requests, please create an "issue" on GitHub. For a version hi
 
 ### Installation
 
+Video tutorials:
+1. [Installing Monet using Miniconda (on Linux)](https://www.youtube.com/watch?v=ERFW0UglZB8)
+
 To install Monet, please first use [conda](https://docs.conda.io/en/latest/) to install the packages *pandas*, *scipy*, *scikit-learn*, and *plotly*. If you are new to conda, you can either [install Anaconda](https://docs.anaconda.com/anaconda/install/), which includes all of the aforementioned packages, or you can [install miniconda](https://docs.conda.io/en/latest/miniconda.html) and then manually install these packages. I also recommend using [Jupyter electronic notebooks](https://jupyter.org/) to analyze scRNA-Seq data, which requires installation of the *jupyter* package (also with conda).
 
 Once these prerequisites are installed, you can install Monet using pip:

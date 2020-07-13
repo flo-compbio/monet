@@ -29,6 +29,7 @@ Numeric = Union[int, float]
 def tsne_plot(
         matrix: ExpMatrix, monet_model: MonetModel = None,
         num_components: int = 30, perplexity: Numeric = 30,
+        transform_name: str = None,
         init: str = 'random', seed: int = 0,
         exaggerated_tsne: bool = False, random_order: bool = False,
         tsne_kwargs=None, **kwargs) \
@@ -42,7 +43,12 @@ def tsne_plot(
         _LOGGER.info(
             'No Monet model provided, performing PCA to determine first %d'
             'principal components...', num_components)
-        pca_model = PCAModel(num_components=num_components, seed=seed)
+        pca_kwargs = {}
+        if transform_name is not None:
+            _LOGGER.info('Using "%s" transform!', transform_name)
+            pca_kwargs['transform_name'] = transform_name
+        pca_model = PCAModel(num_components=num_components, seed=seed,
+                             **pca_kwargs)
         pc_scores = pca_model.fit_transform(matrix)
 
     else:

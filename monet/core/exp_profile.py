@@ -1,4 +1,4 @@
-# Author: Florian Wagner <florian.wagner@uchicago.edu>
+# Author: Florian Wagner <florian.compbio@gmail.com>
 # Copyright (c) 2020 Florian Wagner
 #
 # This file is part of Monet.
@@ -39,6 +39,8 @@ class ExpProfile(pd.Series):
         return '<%s instance with %d genes>' \
                % (self.__class__.__name__, self.num_genes)
 
+    def __str__(self):
+        return super().__repr__()
 
     @property
     def _constructor(self):

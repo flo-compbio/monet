@@ -1,4 +1,4 @@
-# Author: Florian Wagner <florian.wagner@uchicago.edu>
+# Author: Florian Wagner <florian.compbio@gmail.com>
 # Copyright (c) 2020 Florian Wagner
 #
 # This file is part of Monet.
@@ -10,11 +10,11 @@ import sys
 from contextlib import AbstractContextManager
 
 
-def configure_logger():
+def configure_logger(name='', level=logging.INFO):
     """Configure a root logger."""
 
-    logger = logging.getLogger('')
-    logger.setLevel(logging.INFO)
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
     logger.propagate = False
     logger.handlers = []
 
@@ -43,7 +43,7 @@ class LoggingFilter(AbstractContextManager):
                     x.name.startswith(prefix)
         else:
             self._filter = lambda x: x.name.startswith(prefix)
-    
+
     def __enter__(self):
         self.handler.addFilter(self._filter)
         return self

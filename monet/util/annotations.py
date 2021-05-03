@@ -1,4 +1,4 @@
-# Author: Florian Wagner <florian.wagner@uchicago.edu>
+# Author: Florian Wagner <florian.compbio@gmail.com>
 # Copyright (c) 2020 Florian Wagner
 #
 # This file is part of Monet.
@@ -40,10 +40,10 @@ def get_ensembl_genes(
         _LOGGER.info('Extracting selected genes from GTF file...')
         _LOGGER.info('Selected gene types: %s',
                      ', '.join(sorted(gene_types)))
-    
+
     if gene_types is not None:
         gene_types = set(gene_types)
-    
+
     parser = pd.read_csv(
         annotation_file,
         chunksize=chunksize,
@@ -56,34 +56,34 @@ def get_ensembl_genes(
     num_chunks = 0
     num_lines = 0
     num_gene_lines = 0
-    
+
     data = []
-    
+
     for j, df in enumerate(parser):
 
         num_chunks += 1
         num_lines += (df.shape[0])
-        
+
         # select "gene" rows
         df = df.loc[df.iloc[:, 2] == 'gene']
         num_gene_lines += (df.shape[0])
 
         for i, row in df.iterrows():
-            
+
             # parse attributes
             attributes = _parse_attributes(row.iloc[8])
-            
+
             if gene_types is None or \
                     attributes['gene_biotype'] in gene_types:
-                
+
                 chromosome = row.iloc[0]
                 type_ = attributes['gene_biotype']
                 ensembl_id = attributes['gene_id']
                 name = attributes['gene_name']
-            
+
                 d = [ensembl_id, name, chromosome, type_]
                 data.append(d)
-    
+
     columns = ['Ensembl ID', 'Name', 'Chromosome', 'Type']
     genes = pd.DataFrame(data=data, columns=columns)
     genes.sort_values('Name', inplace=True)
@@ -94,7 +94,7 @@ def get_ensembl_genes(
                  num_lines, num_chunks)
     _LOGGER.info('Found %d lines with gene annotations and %d valid genes.',
                  num_gene_lines, num_valid_genes)
-    
+
     return genes
 
 
@@ -108,8 +108,10 @@ def get_ensembl_protein_coding_genes(annotation_file: str, **kwargs) \
         _LOGGER.info('Additional gene types: %s',
                      ', '.join(sorted(additional_gene_types)))    
     
-    gene_types = {'protein_coding'}
-
+    gene_types = {'protein_coding'} | \
+        {'IG_V_gene', 'IG_D_gene', 'IG_J_gene', 'IG_C_gene'} | \
+        {'TR_V_gene', 'TR_D_gene', 'TR_J_gene', 'TR_C_gene'}
+    
     kwargs['gene_types'] = gene_types | additional_gene_types
     
     genes = get_ensembl_genes(annotation_file, **kwargs)

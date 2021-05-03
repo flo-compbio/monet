@@ -1,4 +1,4 @@
-# Author: Florian Wagner <florian.wagner@uchicago.edu>
+# Author: Florian Wagner <florian.compbio@gmail.com>
 # Copyright (c) 2020 Florian Wagner
 #
 # This file is part of Monet.
@@ -10,7 +10,7 @@ import time
 import os
 import pickle
 import gc
-from typing import Union
+from typing import Union, Iterable
 
 from ..core import ExpMatrix
 from .. import util
@@ -32,6 +32,7 @@ class PCAModel:
                  transcript_count: Union[float, int] = None,
                  transform_name: str = 'freeman-tukey',
                  svd_solver = 'randomized',
+                 sel_genes: Iterable[str] = None,
                  seed: int = 0) -> None:
 
         self.num_components = num_components
@@ -39,6 +40,7 @@ class PCAModel:
         self.transform_name = transform_name
         self.svd_solver = svd_solver
         self.seed = seed
+        self.sel_genes = sel_genes
 
         self.genes_ = None
         self.model_ = None
@@ -97,6 +99,10 @@ class PCAModel:
         matrix = matrix.scale(self.transcript_count_).transform(
             self.transform_name)
         gc.collect()
+
+        # select genes (if desired)
+        if self.sel_genes is not None:
+            matrix = matrix.loc[self.sel_genes]
 
         # perform PCA
         model = PCA(n_components=self.num_components,
@@ -160,6 +166,13 @@ class PCAModel:
         # make sure data is cast to same data type as training data
         matrix = matrix.astype(self.dtype_, copy=False)
 
+        # apply scaling and transformation
+        _LOGGER.info('Expression profiles will be scaled %.2fx (on average).',
+                     self.transcript_count_ / matrix.median_transcript_count)
+        matrix = matrix.scale(self.transcript_count_).transform(
+            self.transform_name)
+        gc.collect()
+
         # align genes
         num_missing = self.num_genes_ - self.genes_.isin(matrix.genes).sum()
         if num_missing > 0:
@@ -170,12 +183,6 @@ class PCAModel:
         matrix = matrix.reindex(index=self.genes_, fill_value=0)
 
         # project onto principal components
-        _LOGGER.info('Expression profiles will be scaled %.2fx (on average).',
-                     self.transcript_count_ / matrix.median_transcript_count)
-        matrix = matrix.scale(self.transcript_count_).transform(
-            self.transform_name)
-        gc.collect()
-
         X = matrix.X
         assert X.dtype == self.dtype_
         Y = self.model_.transform(X)

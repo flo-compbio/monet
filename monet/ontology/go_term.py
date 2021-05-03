@@ -1,12 +1,15 @@
-# Author: Florian Wagner <florian.wagner@uchicago.edu>
-# Copyright (c) 2020 Florian Wagner
+# Author: Florian Wagner <florian.compbio@gmail.com>
+# Copyright (c) 2015, 2016, 2020 Florian Wagner
 #
 # This file is part of Monet.
 
 """Module containing the `GOTerm` class."""
 
+import logging
+from typing import Iterable
 import re
-from collections import OrderedDict
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class GOTerm:
@@ -76,27 +79,15 @@ class GOTerm:
     """List of tuples defining abbreviations to use in GO term names.
     """
 
-    def __init__(self, id_, name,
-                 domain=None, definition=None,
-                 is_a=None, part_of=None):
+    def __init__(self, id_: str, name: str,
+                 domain: str = None, definition: str = None,
+                 is_a: Iterable[str] = None, part_of: Iterable[str] = None):
 
         if is_a is None:
             is_a = []
 
         if part_of is None:
             part_of = []
-
-        assert isinstance(id_, str)
-        assert isinstance(name, str)
-
-        if domain is not None:
-            assert isinstance(domain, str)
-
-        if definition is not None:
-            assert isinstance(definition, str)
-
-        #assert isinstance(is_a, Iterable)
-        #assert isinstance(part_of, Iterable)
 
         self.id = id_  # unique identifier
         self.name = name
@@ -115,12 +106,15 @@ class GOTerm:
         self.descendants = None
         self.ancestors = None
 
+
     def __repr__(self):
         # The ID uniquely identifies the term
         return '<GOTerm instance (id=%s)>' % self.id
 
+
     def __str__(self):
         return '<GOTerm "%s">' % self.get_pretty_format()
+
 
     def __eq__(self, other):
         if self is other:
@@ -130,11 +124,14 @@ class GOTerm:
         else:
             raise NotImplementedError()
 
+
     def __ne__(self, other):
         return not self.__eq__(other)
 
+
     def __hash__(self):
         return hash(self.id)
+
 
     @staticmethod
     def id2acc(id_):
@@ -153,6 +150,7 @@ class GOTerm:
         """
         return int(id_[3:])
 
+
     @staticmethod
     def acc2id(acc):
         """Converts a GO term accession number to an ID.
@@ -169,17 +167,23 @@ class GOTerm:
         """
         return 'GO:%07d' % acc
 
+
     @property
     def acc(self):
         """Returns the GO term accession number (part of the ID)."""
         return self.id2acc(self.id)
 
+
     @property
     def domain_short(self):
         return self._short_domain[self.domain]
 
-    def get_pretty_format(self, include_id=True, max_name_length=0,
-                          abbreviate=True):
+
+    def get_pretty_format(
+            self,
+            include_id: bool = True,
+            max_name_length: int = 0,
+            abbreviate: bool = True):
         """Returns a nicely formatted string with the GO term information.
 
         Parameters

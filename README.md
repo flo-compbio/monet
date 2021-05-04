@@ -41,7 +41,7 @@ $ conda activate monet
 
 #### 4. Use pip to install the remaining dependencies and Monet itself
 
-Making sure your conda environment is still activated:
+Make sure your conda environment is still activated. Then install the following packages:
 
 ```sh
 (monet) $ pip install leidenalg scanpy monet

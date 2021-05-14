@@ -1,11 +1,12 @@
-# Author: Florian Wagner <florian.wagner@uchicago.edu>
-# Copyright (c) 2020 Florian Wagner
+# Author: Florian Wagner <florian.compbio@gmail.com>
+# Copyright (c) 2015, 2016, 2020 Florian Wagner
 #
 # This file is part of Monet.
 
 """Module containing the `GeneOntology` class.
 """
 
+from typing import Iterable
 import gzip
 import hashlib
 # import re
@@ -52,11 +53,17 @@ class GeneOntology:
 
     Examples
     --------
-    The following example assumes that the Gene Ontology OBO file has been downloaded.
-    >>> from genometools.annotation import GeneOntology
-    >>> ontology = GeneOntology.read_obo('go-basic.obo')
+    The following example assumes that the Gene Ontology OBO file has been
+    downloaded.
+    >>> from monet.ontology import GeneOntology
+    >>> ontology = GeneOntology.load_obo('go-basic.obo')
     """
-    def __init__(self, terms=None, syn2id: dict = None, alt_id: dict = None, name2id: dict = None):
+    def __init__(
+            self,
+            terms: Iterable[GOTerm] = None,
+            syn2id: dict = None,
+            alt_id: dict = None,
+            name2id: dict = None):
 
         if terms is None:
             terms = []
@@ -131,7 +138,7 @@ class GeneOntology:
     def flattened(self):
         return self._flattened
 
-    def save_pickle(self, path, compress=False):
+    def save_pickle(self, fpath: str, compress: bool = False) -> None:
         """Serialize the current `GOParser` object and store it in a pickle file.
 
         Parameters
@@ -150,16 +157,17 @@ class GeneOntology:
         Compression with gzip is significantly slower than storing the file
         in uncompressed form.
         """
-        _LOGGER.info('Writing pickle to "%s"...', path)
+        _LOGGER.info('Writing pickle to "%s"...', fpath)
         if compress:
-            with gzip.open(path, 'wb') as ofh:
+            with gzip.open(fpath, 'wb') as ofh:
                 pickle.dump(self, ofh, pickle.HIGHEST_PROTOCOL)
         else:
-            with open(path, 'wb') as ofh:
+            with open(fpath, 'wb') as ofh:
                 pickle.dump(self, ofh, pickle.HIGHEST_PROTOCOL)
 
+
     @staticmethod
-    def load_pickle(fn):
+    def load_pickle(fpath: str):
         """Load a GOParser object from a pickle file.
 
         The function automatically detects whether the file is compressed
@@ -167,7 +175,7 @@ class GeneOntology:
 
         Parameters
         ----------
-        fn: str
+        fpath: str
             Path of the pickle file.
 
         Returns
@@ -175,11 +183,16 @@ class GeneOntology:
         `GOParser`
             The GOParser object stored in the pickle file.
         """
-        with util.open_plain_or_gzip(fn, 'rb') as fh:
-            parser = pickle.load(fh)
+        if util.is_gzip_file(fpath):
+            with gzip.open(fpath, 'rb') as fh:
+                parser = pickle.load(fh)
+        else:
+            with open(fpath, 'rb') as fh:
+                parser = pickle.load(fh)
         return parser
 
-    def get_term_by_id(self, id_):
+
+    def get_term_by_id(self, id_: str) -> GOTerm:
         """Get the GO term corresponding to the given GO term ID.
 
         Parameters
@@ -194,7 +207,8 @@ class GeneOntology:
         """
         return self[id_]
 
-    def get_term_by_acc(self, acc):
+
+    def get_term_by_acc(self, acc: int) -> GOTerm:
         """Get the GO term corresponding to the given GO term accession number.
 
         Parameters
@@ -209,7 +223,7 @@ class GeneOntology:
         """
         return self[GOTerm.acc2id(acc)]
 
-    def get_term_by_name(self, name):
+    def get_term_by_name(self, name: str) -> GOTerm:
         """Get the GO term with the given GO term name.
 
         If the given name is not associated with any GO term, the function will
@@ -248,13 +262,18 @@ class GeneOntology:
 
         return term
 
+
     @classmethod
-    def load_obo(cls, file_path, flatten=True, part_of_cc_only=False):
+    def load_obo(
+            cls,
+            fpath: str,
+            flatten: bool = True,
+            part_of_cc_only: bool = False):
         """ Parse an OBO file and store GO term information.
 
         Parameters
         ----------
-        path: str
+        fpath: str
             Path of the OBO file.
         flatten: bool, optional
             If set to False, do not generate a list of all ancestors and
@@ -274,9 +293,9 @@ class GeneOntology:
         syn2id = {}
         terms = []
 
-        file_path = os.path.expanduser(file_path)
+        fpath_expanded = os.path.expanduser(fpath)
 
-        with open(file_path) as fh:
+        with open(fpath_expanded) as fh:
             n = 0
             while True:
                 try:
@@ -315,7 +334,8 @@ class GeneOntology:
                                 part_of.add(l[22:32])
                         l = next(fh)
                     assert def_ is not None
-                    terms.append(GOTerm(id_, name, domain, def_, is_a, part_of))
+                    terms.append(
+                        GOTerm(id_, name, domain, def_, is_a, part_of))
 
         _LOGGER.info('Parsed %d GO term definitions.', n)
 
@@ -338,7 +358,8 @@ class GeneOntology:
 
         return ontology
 
-    def _flatten_ancestors(self, include_part_of=True):
+
+    def _flatten_ancestors(self, include_part_of: bool = True):
         """Determines and stores all ancestors of each GO term.
 
         Parameters
@@ -365,7 +386,8 @@ class GeneOntology:
         for term in self:
             term.ancestors = get_all_ancestors(term)
 
-    def _flatten_descendants(self, include_parts=True):
+
+    def _flatten_descendants(self, include_parts: bool = True):
         """Determines and stores all descendants of each GO term.
 
         Parameters

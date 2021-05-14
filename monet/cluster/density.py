@@ -1,4 +1,4 @@
-# Author: Florian Wagner <florian.wagner@uchicago.edu>
+# Author: Florian Wagner <florian.compbio@gmail.com>
 # Copyright (c) 2020 Florian Wagner
 #
 # This file is part of Monet.
@@ -17,10 +17,10 @@ _LOGGER = logging.getLogger(__name__)
 
 def cluster_cells_dbscan(
         tsne_scores: pd.DataFrame,
-        min_cells_frac: float = 0.01, eps_frac: float = 0.03,
-        seed: int = 0) -> Tuple[pd.Series, List[str]]:
+        min_cells_frac: float = 0.01,
+        eps_frac: float = 0.03) -> Tuple[pd.Series, List[str]]:
     """Cluster cells by applying DBSCAN to t-SNE result (Galapagos)."""
-    
+
     # prepare DBSCAN parameters
     ptp = np.ptp(tsne_scores.values, axis=0)
     eps = eps_frac * sqrt(np.sum(np.power(ptp, 2.0)))
@@ -35,7 +35,7 @@ def cluster_cells_dbscan(
     t1 = time.time()
     _LOGGER.info('Clustering with DBSCAN took %.1f s.' % (t1-t0))    
     cell_labels = pd.Series(index=tsne_scores.index, data=z)
-    
+
     # sort clusters by size
     vc = cell_labels.value_counts()
     clusters = [c for c in vc.index if c != -1]
@@ -45,5 +45,5 @@ def cluster_cells_dbscan(
         cluster_labels[-1] = 'Outliers'
     cell_labels = cell_labels.map(cluster_labels)
     clusters = list(cluster_labels.values())
-    
+
     return cell_labels, clusters

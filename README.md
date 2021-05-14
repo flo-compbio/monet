@@ -16,20 +16,40 @@ For questions and requests, please create an "issue" on GitHub. For a version hi
 
 ### Installation
 
-Video tutorials:
-1. [Installing Monet using Miniconda (on Linux)](https://www.youtube.com/watch?v=ERFW0UglZB8)
+The recommended way to install Monet is to first install most of its dependencies using [conda](https://docs.conda.io/en/latest/), and to then install Monet and other dependencies that are not available through conda using [pip](https://pip.pypa.io/en/stable/).
 
-To install Monet, please first use [conda](https://docs.conda.io/en/latest/) to install the packages *pandas*, *scipy*, *scikit-learn*, and *plotly*. If you are new to conda, you can either [install Anaconda](https://docs.anaconda.com/anaconda/install/), which includes all of the aforementioned packages, or you can [install miniconda](https://docs.conda.io/en/latest/miniconda.html) and then manually install these packages. I also recommend using [Jupyter electronic notebooks](https://jupyter.org/) to analyze scRNA-Seq data, which requires installation of the *jupyter* package (also with conda).
+#### 1. Installing Miniconda
 
-Once these prerequisites are installed, you can install Monet using pip:
+If you are new to conda, please [install Miniconda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html#regular-installation).
+
+#### 2. Create a new conda environment for installing Monet
+
+Create a new conda environment named "monet" with Python 3.8 as follows (commands are for Linux/Ubuntu):
 
 ```sh
-$ pip install monet
+$ conda create -n monet python=3.8
 ```
 
-### Tutorials
+#### 3. Use conda to install most of Monet's dependencies
 
-The following tutorials demonstrate how to use Monet to perform various basic and advanced analysis tasks. The Jupyter electronic notebooks can be [downloaded from GitHub](https://github.com/flo-compbio/monet-tutorials).
+Activate the new environment and install the following packages:
+
+```sh
+$ conda activate monet
+(monet) $ conda install scikit-learn pandas cython plotly seaborn statsmodels numba pytables networkx click
+```
+
+#### 4. Use pip to install the remaining dependencies and Monet itself
+
+Make sure your conda environment is still activated. Then install the following packages:
+
+```sh
+(monet) $ pip install leidenalg scanpy monet
+```
+
+### Tutorials (v0.2.2)
+
+The following tutorials were developed using Monet v0.2.2. They demonstrate how to use Monet to perform various basic and advanced analysis tasks. The Jupyter electronic notebooks can be [downloaded from GitHub](https://github.com/flo-compbio/monet-tutorials).
 
 #### Basics
 1. [Loading and saving expression data](https://nbviewer.jupyter.org/github/flo-compbio/monet-tutorials/blob/master/010%20-%20Loading%20and%20saving%20expression%20data.ipynb)
@@ -51,7 +71,7 @@ The following tutorials demonstrate how to use Monet to perform various basic an
 
 ## Copyright and License
 
-Copyright (c) 2020 Florian Wagner
+Copyright (c) 2020-2021 Florian Wagner
 
 Monet is licensed under an OSI-compliant 3-clause BSD license. For details, see [LICENSE](LICENSE).
 

@@ -1,4 +1,4 @@
-# Author: Florian Wagner <florian.wagner@uchicago.edu>
+# Author: Florian Wagner <florian.compbio@gmail.com>
 # Copyright (c) 2020 Florian Wagner
 #
 # This file is part of Monet.
@@ -22,14 +22,14 @@ from . import PCAModel
 from . import CompressedData
 from .util import generate_split
 from .util import cross_validate_split
-from .util import aggregate_neighbors
+from .util import determine_num_neighbors, aggregate_neighbors
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class MonetModel:
     """A latent space model for single-cell RNA-Seq data."""
-    
+
     PICKLE_PROTOCOL_VERSION = 4  # requires Python 3.4 or higher
 
     def __init__(
@@ -159,7 +159,7 @@ class MonetModel:
 
     def _determine_num_components(self, matrix: ExpMatrix) -> None:
         """Use MCV to determine the optimum number of PCs.
-        
+
         Implements a grid search strategy to tune the number of PCs. 
         """
         if self.num_components is not None:
@@ -167,7 +167,7 @@ class MonetModel:
             _LOGGER.info('Will use %d PCs (value was pre-specified).',
                          self.num_components_)
             return
-        
+
         _LOGGER.info('Using molecular cross-validation to determine '
                      'the number of PCs...')
 
@@ -364,8 +364,7 @@ class MonetModel:
         latent_space = PCAModel(
             self.num_components_, transcript_count, seed=self.seed)
         pc_scores = latent_space.fit_transform(float_matrix)
-        del float_matrix
-        gc.collect()
+        del float_matrix; gc.collect()
 
         # Check if we perform aggregation steps
         if self.num_aggregation_steps == 0:
@@ -379,7 +378,14 @@ class MonetModel:
             return
 
         # Determine number of neighbors for aggregation step
-        self._determine_agg_num_neighbors(matrix)
+        if self.agg_num_neighbors is not None:
+            _LOGGER.info('Will perform kNN-aggregation with num_neighbors=%d '
+                         '(value was pre-specified).', self.agg_num_neighbors)
+            self.agg_num_neighbors_ = self.agg_num_neighbors
+        else:
+            self.agg_num_neighbors_ = determine_num_neighbors(
+                matrix, self.agg_target_transcript_count,
+                self.agg_max_frac_neighbors)
 
         if self.agg_num_neighbors_ == 1:
             # Skip aggregation steps

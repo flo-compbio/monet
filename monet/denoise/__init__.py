@@ -1,6 +1,7 @@
-# Author: Florian Wagner <florian.wagner@uchicago.edu>
+# Author: Florian Wagner <florian.compbio@gmail.com>
 # Copyright (c) 2020 Florian Wagner
 #
 # This file is part of Monet.
 
-from .enhance import ENHANCE
+from .mcv import mcv_estimate_num_components
+from .enhance_model import EnhanceModel

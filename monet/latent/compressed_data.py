@@ -1,4 +1,4 @@
-# Author: Florian Wagner <florian.wagner@uchicago.edu>
+# Author: Florian Wagner <florian.compbio@gmail.com>
 # Copyright (c) 2020 Florian Wagner
 #
 # This file is part of Monet.
@@ -42,7 +42,7 @@ class CompressedData:
     @property
     def num_genes(self):
         return self.pca_model.num_genes_
-    
+
     @property
     def num_cells(self):
         return self.pc_scores.shape[0]

@@ -1,4 +1,4 @@
-# Author: Florian Wagner <florian.wagner@uchicago.edu>
+# Author: Florian Wagner <florian.compbio@gmail.com>
 # Copyright (c) 2020 Florian Wagner
 #
 # This file is part of Monet.
@@ -6,13 +6,11 @@
 """Utility functions for denoising."""
 
 import logging
-from math import sqrt
-from typing import Tuple
-import gc
-import sys
+from typing import Tuple, Union
 import time
+from math import ceil
 
-from sklearn.metrics import pairwise_distances
+from sklearn.neighbors import NearestNeighbors
 import pandas as pd
 import numpy as np
 from scipy.stats import poisson
@@ -32,52 +30,35 @@ def aggregate_neighbors(
         -> Tuple[ExpMatrix, pd.Series, pd.DataFrame, pd.DataFrame]:
     """Nearest-neighbor aggregation."""
 
-    ### calculate pairwise distances
-
     t0_total = time.time()
 
     # apparently the output of pairwise_distance changes depending on
     # whether array is C-contiguous or not
     Y = np.array(pc_scores.values, order='C', copy=False)
 
-    # bug: np.sqrt() reports "input is invalid" for zeros in np.float32 arrays
-    invalid_errstate = 'warn'
-    if np.issubdtype(Y.dtype, np.float32):
-        invalid_errstate = 'ignore'
-
-    with np.errstate(invalid=invalid_errstate):
-        t0 = time.time()
-        D = pairwise_distances(Y, n_jobs=1, metric='euclidean')
-        t1 = time.time()
-    _LOGGER.info('Calculating the pairwise distances took %.1f s.', t1-t0)
-
-    ### sort the distance matrix
+    ### constructing the KD-tree
     t0 = time.time()
-    sort_indices = np.argsort(D, axis=1, kind='quicksort')
+    neigh = NearestNeighbors(n_neighbors=num_neighbors, algorithm='kd_tree')
+    neigh.fit(Y)
     t1 = time.time()
-    _LOGGER.info('Sorting the pairwise distance matrix took %.1f s.', t1-t0)
+    _LOGGER.info('Constructing the KD-tree took %.1f s.', t1-t0)
 
     ### aggregate expression values
-
     X = np.array(matrix.X, order='C', copy=False)
     num_transcripts = X.sum(axis=1)
     dtype = X.dtype
 
-    A = np.empty(
-        X.shape, order='C', dtype=dtype)
-    neighbors = np.empty(
-        (matrix.num_cells, num_neighbors), dtype=np.int64)
-    neighbor_dists = np.empty(
-        (matrix.num_cells, num_neighbors), dtype=np.float64)
-    cell_sizes = np.empty(
-        matrix.num_cells, dtype=np.float64)
+    # this returns each point itself as its own nearest neighbor
+    # (behavior is different if kneighbors() is called without Y)
+    neighbor_dists, neighbors = neigh.kneighbors(Y, return_distance=True)
+
+    A = np.empty(X.shape, order='C', dtype=dtype)
+    cell_sizes = np.empty(matrix.num_cells, dtype=np.float64)
 
     t0 = time.time()
     for i in range(matrix.num_cells):
-        ind = sort_indices[i, :num_neighbors]
+        ind = neighbors[i, :]
         A[i, :] = np.sum(X[ind, :], axis=0, dtype=dtype)
-        neighbors[i, :] = ind
-        neighbor_dists[i, :] = D[i, ind]
         cell_sizes[i] = np.median(num_transcripts[ind])
     t1 = time.time()
     _LOGGER.info('Aggregating the expression values took %.1f s.', t1-t0)
@@ -97,7 +78,41 @@ def aggregate_neighbors(
     return agg_matrix, cell_sizes, neighbors, neighbor_dists
 
 
-def estimate_num_components(
+def determine_num_neighbors(
+        matrix: ExpMatrix,
+        target_transcript_count: Union[int, float],
+        max_frac_neighbors: float) -> int:
+    """Determine the number of neighbors to use for kNN-aggregation."""
+
+    transcript_count = matrix.median_transcript_count
+    _LOGGER.info('The median transcript count is %.1f.',
+                    transcript_count)
+
+    num_neighbors = int(ceil(target_transcript_count / transcript_count))
+
+    max_num_neighbors = \
+            max(int(max_frac_neighbors * matrix.num_cells), 1)
+    if num_neighbors <= max_num_neighbors:
+        _LOGGER.info(
+            'Will use num_neighbors=%d for aggregation'
+            '(value was determined automatically '
+            'based on a target transcript count of %.1f).',
+            num_neighbors, float(target_transcript_count))
+    else:
+        _LOGGER.warning(
+            'Will use num_neighbors=%d for aggregation, '
+            'to not exceed %.1f %% of the total number of cells. '
+            'However, based on a target transcript count of %d, '
+            'we should use k=%d. As a result, gene loadings '
+            'may be biased towards highly expressed genes.',
+            max_num_neighbors, 100*max_frac_neighbors,
+            target_transcript_count, num_neighbors)
+        num_neighbors = max_num_neighbors
+
+    return num_neighbors
+
+
+def var_estimate_num_components(
         matrix: ExpMatrix,
         max_components: int = 100,
         var_fold_thresh: float = 2.0, 
@@ -136,3 +151,22 @@ def estimate_num_components(
     _LOGGER.info('The estimated number of PCs is %d.', num_components)
 
     return num_components, random_var
+
+
+def denoise_data(matrix: ExpMatrix, num_components: int, pca_model: PCAModel,
+                 scale: bool = True) -> ExpMatrix:
+    pc_scores = pca_model.transform(matrix)
+    agg_matrix, cell_sizes, _, _ = aggregate_neighbors(
+        matrix, pc_scores, pca_model.agg_num_neighbors_)
+
+    pca_model = PCAModel(num_components)
+    pc_scores = pca_model.fit_transform(agg_matrix)
+
+    if not scale:
+        # do not use inferred cell sizes, instead, keep aggregated cell sizes
+        cell_sizes = agg_matrix.sum(axis=0)
+
+    compressed_data = CompressedData(pca_model, pc_scores, cell_sizes)
+    denoised_matrix = compressed_data.decompress()
+
+    return denoised_matrix

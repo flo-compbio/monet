@@ -1,4 +1,4 @@
-# Author: Florian Wagner <florian.wagner@uchicago.edu>
+# Author: Florian Wagner <florian.compbio@gmail.com>
 # Copyright (c) 2020 Florian Wagner
 #
 # This file is part of Monet.
@@ -7,8 +7,8 @@ import gc
 import sys
 import time
 import logging
-from typing import Tuple
-from math import sqrt
+from typing import Tuple, Union
+from math import sqrt, ceil
 
 import pandas as pd
 import numpy as np
@@ -100,6 +100,40 @@ def cross_validate_split(
         gc.collect()
     
     return loss_values
+
+
+def determine_num_neighbors(
+        matrix: ExpMatrix,
+        target_transcript_count: Union[int, float],
+        max_frac_neighbors: float) -> int:
+    """Determine the number of neighbors to use for kNN-aggregation."""
+
+    transcript_count = matrix.median_transcript_count
+    _LOGGER.info('The median transcript count is %.1f.',
+                    transcript_count)
+
+    num_neighbors = int(ceil(target_transcript_count / 
+                                transcript_count))
+    max_num_neighbors = \
+            max(int(max_frac_neighbors * matrix.num_cells), 1)
+    if num_neighbors <= max_num_neighbors:
+        _LOGGER.info(
+            'Will use num_neighbors=%d for aggregation'
+            '(value was determined automatically '
+            'based on a target transcript count of %.1f).',
+            num_neighbors, float(target_transcript_count))
+    else:
+        _LOGGER.warning(
+            'Will use num_neighbors=%d for aggregation, '
+            'to not exceed %.1f %% of the total number of cells. '
+            'However, based on a target transcript count of %d, '
+            'we should use k=%d. As a result, gene loadings'
+            'may be biased towards highly expressed genes.',
+            max_num_neighbors, 100*max_frac_neighbors,
+            target_transcript_count, num_neighbors)
+        num_neighbors = max_num_neighbors
+
+    return num_neighbors
 
 
 def aggregate_neighbors(

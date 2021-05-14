@@ -8,7 +8,7 @@ from os import path
 
 root = 'monet'
 name = 'monet'
-version = '0.2.2'
+version = '0.3.0'
 
 here = path.abspath(path.dirname(__file__))
 description = ('Monet: An open-source Python package for analyzing and '
@@ -22,7 +22,10 @@ install_requires = [
     'scikit-learn>=0.22.1',
     #'plotly>=4.4.1',
     'plotly>=4.2.1',
-    'click>=7.0',
+    'click>=7, <8',
+    'xlmhg>=2.5.4',
+    'scanpy>=1.5.1',
+    'umap-learn>=0.4.6',
 ]
 
 # get long description from file
@@ -62,7 +65,7 @@ setup(
     url='https://github.com/flo-compbio/monet',
 
     author='Florian Wagner',
-    author_email='florian.wagner@uchicago.edu',
+    author_email='florian.compbio@gmail.com',
 
     license='3-clause BSD',
 

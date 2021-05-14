@@ -1,4 +1,4 @@
-# Author: Florian Wagner <florian.wagner@uchicago.edu>
+# Author: Florian Wagner <florian.compbio@gmail.com>
 # Copyright (c) 2020 Florian Wagner
 #
 # This file is part of Monet.
@@ -6,7 +6,7 @@
 import logging
 import time
 import sys
-from typing import Union, Tuple, Dict
+from typing import Union, Tuple, Dict, Iterable
 
 from sklearn.neighbors import NearestNeighbors
 from sklearn.manifold import TSNE
@@ -16,7 +16,6 @@ import numpy as np
 
 from ..core import ExpMatrix
 from ..latent import PCAModel
-from ..latent import MonetModel
 from ..batch_correct import correct_mnn
 from .cells import plot_cells, plot_cells_random_order
 from .util import ACCESSIBLE_COLORS
@@ -27,29 +26,42 @@ Numeric = Union[int, float]
 
 
 def tsne_plot(
-        matrix: ExpMatrix, monet_model: MonetModel = None,
-        num_components: int = 30, perplexity: Numeric = 30,
+        matrix: ExpMatrix, num_components: int = 50, 
+        perplexity: Numeric = 30,
+        pca_model: PCAModel = None,
+        transform_name: str = None, sel_genes: Iterable[str] = None,
         init: str = 'random', seed: int = 0,
         exaggerated_tsne: bool = False, random_order: bool = False,
+        learning_rate: float = 200.0,
         tsne_kwargs=None, **kwargs) \
             -> Tuple[go.Figure, pd.DataFrame]:
     """Perform t-SNE on PCA-transformed data."""
 
     if tsne_kwargs is None:
         tsne_kwargs = {}
-    
-    if monet_model is None:
+
+    if pca_model is None:
         _LOGGER.info(
-            'No Monet model provided, performing PCA to determine first %d'
+            'No PCA model provided, performing PCA to determine first %d '
             'principal components...', num_components)
-        pca_model = PCAModel(num_components=num_components, seed=seed)
+        pca_kwargs = {}
+        if transform_name is not None:
+            _LOGGER.info('Using "%s" transform!', transform_name)
+            pca_kwargs['transform_name'] = transform_name
+        pca_model = PCAModel(
+            num_components=num_components, sel_genes=sel_genes,
+            seed=seed, **pca_kwargs)
         pc_scores = pca_model.fit_transform(matrix)
 
     else:
         _LOGGER.info(
-            'Using Monet model to project data onto a %d-dimensional '
-            'latent space...', monet_model.num_components_)
-        pc_scores = monet_model.transform(matrix)
+            'Using PCA model to project data onto a %d-dimensional '
+            'latent space...', pca_model.num_components)
+        pc_scores = pca_model.transform(matrix)
+
+    if learning_rate is None:
+        learning_rate = max(200.0, matrix.shape[1] / 48.0)
+        _LOGGER.info('Using learning_rate=%.1f', learning_rate)
 
     if exaggerated_tsne:
         init = 'random'
@@ -57,9 +69,8 @@ def tsne_plot(
         tsne_kwargs['n_iter'] = 250
 
     tsne_seed = tsne_kwargs.pop('random_state', seed)
-
     tsne_model = TSNE(perplexity=perplexity, random_state=tsne_seed,
-                      init=init, **tsne_kwargs)
+                      learning_rate=learning_rate, init=init, **tsne_kwargs)
 
     t0 = time.time()
     if exaggerated_tsne:
@@ -67,19 +78,19 @@ def tsne_plot(
     else:
         _LOGGER.info('Performing t-SNE...'); sys.stdout.flush()
 
-    Z = tsne_model.fit_transform(pc_scores.values)
+    Y = tsne_model.fit_transform(pc_scores.values)
     t1 = time.time()
     _LOGGER.info('t-SNE took %.1f s.' % (t1-t0))
     
     if exaggerated_tsne:
         dim_labels = ['t-SNE* dim. %d' % (l+1)
-                      for l in range(Z.shape[1])]
+                      for l in range(Y.shape[1])]
     else:
         dim_labels = ['t-SNE dim. %d' % (l+1)
-                      for l in range(Z.shape[1])]
+                      for l in range(Y.shape[1])]
 
     tsne_scores = pd.DataFrame(
-        index=pc_scores.index, columns=dim_labels, data=Z)
+        index=pc_scores.index, columns=dim_labels, data=Y)
 
     if random_order:
         fig, _ = plot_cells_random_order(tsne_scores, **kwargs)
@@ -91,7 +102,7 @@ def tsne_plot(
 
 
 def batch_corrected_tsne_plot(
-        monet_model: MonetModel,
+        pca_model: PCAModel,
         ref_matrix: ExpMatrix, target_matrix: ExpMatrix,
         k: int = 20, num_mnn: int = 5,
         perplexity: Numeric = 30, seed: int = 0,
@@ -147,7 +158,7 @@ def batch_corrected_tsne_plot(
     # get batch-corrected PC scores for target matrix
     # and regular PC scores for reference matrix
     target_pc_scores, ref_pc_scores = correct_mnn(
-        monet_model, ref_matrix, target_matrix, k=k, num_mnn=num_mnn)
+        pca_model, ref_matrix, target_matrix, k=k, num_mnn=num_mnn)
 
     # combine both data frames
     ref_pc_scores.index = ref_pc_scores.index.to_series().apply(
@@ -174,19 +185,19 @@ def batch_corrected_tsne_plot(
             perplexity=tsne_perp, random_state=tsne_seed,
             init=tsne_init, **tsne_kwargs)
 
-    Z = tsne_model.fit_transform(pc_scores.values)
+    Y = tsne_model.fit_transform(pc_scores.values)
     t1 = time.time()
     _LOGGER.info('t-SNE took %.1f s.' % (t1-t0))
 
     if exaggerated_tsne:
         dim_labels = ['t-SNE* dim. %d' % (l+1)
-                      for l in range(Z.shape[1])]
+                      for l in range(Y.shape[1])]
     else:
         dim_labels = ['t-SNE dim. %d' % (l+1)
-                      for l in range(Z.shape[1])]
+                      for l in range(Y.shape[1])]
 
     tsne_scores = pd.DataFrame(
-        index=pc_scores.index, columns=dim_labels, data=Z)
+        index=pc_scores.index, columns=dim_labels, data=Y)
 
     cell_labels = tsne_scores.index.to_series().str.split('_').apply(
         lambda x:x[0])

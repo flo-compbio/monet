@@ -13,7 +13,7 @@ import plotly.graph_objs as go
 from ..core import ExpMatrix
 from ..visualize import Heatmap, HeatmapPanel, HeatmapAnnotation, HeatmapLayout
 from ..cluster import order_matrix, get_overexpressed_genes, get_variable_genes
-from ..util import get_variable_genes_cv
+from ..util import get_variable_genes_cv, get_variable_genes_fano
 from ..visualize.util import DEFAULT_PLOTLY_COLORS, DEFAULT_GGPLOT_COLORS
 from .. import util
 from .util import get_default_cluster_colors
@@ -73,8 +73,9 @@ def variable_gene_heatmap(
         raw_matrix: ExpData,
         denoised_matrix: ExpData,
         cell_labels: LabelData,
-        num_genes: int = 200,
-        select_cluster: str = None,
+        num_genes: int = 500,
+        min_exp_thresh: float=0.10,
+        sel_cluster: str = None,
         **kwargs) \
             -> Tuple[go.Figure, go.Figure, go.Figure, ExpMatrix, ExpMatrix]:
 
@@ -89,20 +90,26 @@ def variable_gene_heatmap(
     else:
         cell_labels_loaded = cell_labels
 
-    if select_cluster is not None:
+    if sel_cluster is not None:
+        if isinstance(sel_cluster, (str, int)):
+            sel_cluster = [sel_cluster]
         cluster_labels = kwargs.get('cluster_labels', {})
-        mapped_cell_labels = cell_labels_loaded.replace(
-            kwargs['cluster_labels'])
-        try:
-            mapped_select_cluster = cluster_labels[select_cluster]
-        except KeyError:
-            mapped_select_cluster = select_cluster
+        mapped_cell_labels = cell_labels_loaded.replace(cluster_labels)
+        mapped_sel_cluster = []
+        for cluster in sel_cluster:
+            try:
+                mapped_cluster = cluster_labels[cluster]
+            except KeyError:
+                mapped_sel_cluster.append(cluster)
+            else:
+                mapped_sel_cluster.append(mapped_cluster)
 
-        sel_cells = (mapped_cell_labels == mapped_select_cluster)
+        sel_cells = (mapped_cell_labels.isin(mapped_sel_cluster))
         cell_labels_loaded = cell_labels_loaded.loc[sel_cells]
         matrix = matrix.loc[:, sel_cells]
 
-    var_genes_df, _ = get_variable_genes_cv(matrix, num_genes)
+    var_genes_df, _ = get_variable_genes_cv(
+        matrix, num_genes, min_exp_thresh=min_exp_thresh)
 
     var_genes = var_genes_df.index.tolist()
     _LOGGER.info('Total number of variable genes: %d', len(var_genes))
@@ -142,8 +149,7 @@ def variable_gene_heatmap_old(
 
     if select_cluster is not None:
         cluster_labels = kwargs.get('cluster_labels', {})
-        mapped_cell_labels = cell_labels_loaded.replace(
-            kwargs['cluster_labels'])
+        mapped_cell_labels = cell_labels_loaded.replace(cluster_labels)
         try:
             mapped_select_cluster = cluster_labels[select_cluster]
         except KeyError:
@@ -205,7 +211,7 @@ def singlecell_heatmap(
         colorbar_label = 'z-score'
 
     if cluster_colors is None:
-        cluster_colors = get_default_cluster_colors()
+        cluster_colors = {}
 
     if cluster_labels is None:
         cluster_labels = {}
@@ -223,7 +229,8 @@ def singlecell_heatmap(
         matrix = denoised_matrix
 
     # align denoised matrix with labels
-    matrix = matrix.loc[:, cell_labels.index]
+    if cell_labels is not None:
+        matrix = matrix.loc[:, cell_labels.index]
 
     if cell_labels is None:
         # create a dummy cluster
@@ -498,7 +505,7 @@ def singlecell_heatmap(
             clusterorder=cluster_order,
             clustercolors=cluster_colors,
             clusterlabels=cluster_labels,
-            title='Clustering',
+            title=annotation_label,
             colorscheme=colorscheme,
             showscale=True,
         )

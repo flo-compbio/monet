@@ -42,7 +42,7 @@ def tsne_plot(
 
     if pca_model is None:
         _LOGGER.info(
-            'No Monet model provided, performing PCA to determine first %d '
+            'No PCA model provided, performing PCA to determine first %d '
             'principal components...', num_components)
         pca_kwargs = {}
         if transform_name is not None:
@@ -55,8 +55,8 @@ def tsne_plot(
 
     else:
         _LOGGER.info(
-            'Using Monet model to project data onto a %d-dimensional '
-            'latent space...', pca_model.num_components_)
+            'Using PCA model to project data onto a %d-dimensional '
+            'latent space...', pca_model.num_components)
         pc_scores = pca_model.transform(matrix)
 
     if learning_rate is None:

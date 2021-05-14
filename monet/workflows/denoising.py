@@ -11,10 +11,12 @@ from ..denoise import EnhanceModel
 _LOGGER = logging.getLogger(__name__)
 
 
-def enhance(expression_file: str, output_file: str = None,
+def enhance(matrix: Union[str, ExpMatrix], output_file: str = None,
             num_components: Union[str, int] = 'mcv') -> EnhanceModel:
 
-    matrix = ExpMatrix.load(expression_file)
+    if isinstance(matrix, str):
+        # treat as file path
+        matrix = ExpMatrix.load(matrix)
 
     enhance_model = EnhanceModel(num_components=num_components)
     enhance_model.fit(matrix)

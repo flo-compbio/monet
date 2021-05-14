@@ -2,7 +2,7 @@
 #
 # This file is part of Monet.
 
-from typing import Tuple
+from typing import Tuple, Union
 
 import pandas as pd
 import plotly.graph_objs as go
@@ -14,7 +14,7 @@ from .. import util
 
 
 def density_based_clustering(
-        expression_file: str, output_file: str = None,
+        matrix: Union[str, ExpMatrix], output_file: str = None,
         num_components: int = 50,
         min_cells_frac: float = 0.01, eps_frac: float = 0.03,
         tsne_scores: pd.DataFrame = None,
@@ -22,7 +22,9 @@ def density_based_clustering(
             -> Tuple[pd.Series, go.Figure, go.Figure, pd.DataFrame]:
     """Perform density-based clustering using DBSCAN on t-SNE results."""
 
-    matrix = ExpMatrix.load(expression_file)
+    if isinstance(matrix, str):
+        # treat as file path
+        matrix = ExpMatrix.load(matrix)
 
     if tsne_scores is None:
         tsne_fig, tsne_scores = tsne_plot(
@@ -54,14 +56,16 @@ def density_based_clustering(
 
 
 def graph_based_clustering(
-        expression_file: str, output_file: str = None,
+        matrix: Union[str, ExpMatrix], output_file: str = None,
         num_components: int = 50,
         resolution: float = 0.8,
         umap_kwargs: dict = None,
         title: str = None,
         umap_scores: pd.DataFrame = None) -> pd.Series:
 
-    matrix = ExpMatrix.load(expression_file)
+    if isinstance(matrix, str):
+        # treat as file path
+        matrix = ExpMatrix.load(matrix)
 
     if umap_kwargs is None:
         umap_kwargs = {}

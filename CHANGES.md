@@ -8,7 +8,7 @@
 
 * Added utility function `util.zscore()` to convert a matrix to z-scores.
 
-### v0.3.0 (2021-05-04)
+### v0.3.0 (2021-05-14)
 
 * Added support for heatmaps (`workflows.overexpressed_gene_heatmap()`)
 

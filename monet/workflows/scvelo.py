@@ -109,3 +109,5 @@ def scvelo(data: Union[VelocytoData, str],
         figsize=[4.5, 4.5],
         color=color,
         title=title)
+
+    return adata

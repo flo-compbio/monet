@@ -262,7 +262,7 @@ class PCAModel:
 
             # apply inverse
             X = 0.125 * (2.0*np.power(X, 2.0) - 3.0)
-        
+
         elif self.transform_name == 'log':
             # reverse log transform, y=ln(x+1)
 

@@ -145,7 +145,7 @@ class ExpMatrix(pd.DataFrame):
         """Apply a transformation to the expression profiles."""
 
         valid_transforms = ['freeman-tukey', 'anscombe', 'log',
-                            'pearson', 'sqrt']
+                            'pearson', 'sqrt', 'none', None]
 
         if name not in valid_transforms:
             valid_transform_str = ', '.join(
@@ -170,6 +170,9 @@ class ExpMatrix(pd.DataFrame):
 
         elif name == 'sqrt':
             transformed_matrix = np.sqrt(self)
+
+        elif name == 'none' or name is None:
+            transformed_matrix = self
 
         if inplace:
             self._update_inplace(transformed_matrix)

@@ -128,6 +128,7 @@ def preprocess_data(
     gc.collect()
 
     data = {
+        'num_transcripts': num_transcripts.loc[matrix.cells],
         'frac_mito': frac_mito.loc[matrix.cells],
         'frac_ribo': frac_ribo.loc[matrix.cells],
     }

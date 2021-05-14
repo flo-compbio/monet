@@ -32,7 +32,7 @@ def plot_cells(
         cluster_order: List[str] = None,
         cluster_colors: Dict[str, str] = None,
         cluster_labels: Dict[str, str] = None,
-        label_cells: bool = False,
+        labelcells: bool = True,
         width: int = None, height: int = None,
         title: str = None,
         marker_size: int = 4, marker_color: str = None,
@@ -49,6 +49,7 @@ def plot_cells(
         showlegend: bool = False,
         showlabels: bool = True,
         labelsize: Numeric = 24,
+        offsetlabels: bool = False,
         colorlabels: bool = False,
         showaxislabels: bool = True,
         default_colors: List[str] = None,
@@ -141,10 +142,10 @@ def plot_cells(
             color=cluster_colors[cluster]
 
         sel_scores = scores.loc[sel]
-        x=sel_scores.iloc[:, 0].values
-        y=sel_scores.iloc[:, 1].values
+        x = sel_scores.iloc[:, 0].values
+        y = sel_scores.iloc[:, 1].values
 
-        if label_cells:
+        if labelcells:
             text = sel_scores.index.tolist()
         else:
             text = None
@@ -213,10 +214,19 @@ def plot_cells(
     if cell_labels is not None and showlabels:
 
         for cluster in cluster_order:
-            if cluster == 'Outliers':
+            if cluster == 'Outliers' or cluster == 'Doublets':
                 continue
 
             pos = scores.loc[internal_cell_labels == cluster].median(axis=0)
+            xanchor = 'left'
+
+            if offsetlabels:
+                #ptp_x = np.ptp(scores.iloc[:, 0])
+                #offset_x = ptp_x * 0.025
+                #pos.iloc[0] = pos.iloc[0] + offset_x
+                ptp_y = np.ptp(scores.iloc[:, 1])
+                offset_y = ptp_y * 0.035
+                pos.iloc[1] = pos.iloc[1] - offset_y
 
             try:
                 text = cluster_labels[cluster]
@@ -241,6 +251,7 @@ def plot_cells(
                 x=pos.iloc[0],
                 y=pos.iloc[1],
                 text=text,
+                xanchor=xanchor,
                 showarrow=False,
                 font=font,
             )

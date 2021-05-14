@@ -258,3 +258,88 @@ def get_variable_genes_fano(
     fig = go.Figure(data=data, layout=layout)
 
     return var_genes, fig
+
+
+def get_variable_genes(
+        matrix: ExpMatrix,
+        num_genes: int = 1000,
+        thresh: Numeric = 100,
+        sel_genes: Iterable[str] = None,
+        marker_size: Numeric = 3) -> Tuple[pd.DataFrame, go.Figure]:
+    """Select most variable genes based on coefficient of variation."""
+
+    scaled_matrix = matrix.scale()
+
+    if sel_genes is not None:
+        scaled_matrix = scaled_matrix.loc[sel_genes]
+
+    # remove genes without expression
+    scaled_matrix = scaled_matrix.loc[scaled_matrix.mean(axis=1) > 0]
+
+    # calculate tp10k mean for plotting later
+    mean = scaled_matrix.mean(axis=1)
+    tp10k_mean = (1e4 / mean.sum()) * mean
+
+    
+
+    # calculate z-scores and apply threshold
+    zscore_matrix = scaled_matrix.standardize_genes()
+    zscore_matrix.values[zscore_matrix.values < zscore_thresh] = zscore_thresh
+
+    # calculate variance score
+    var_score = zscore_matrix.sum(axis=1)
+
+    index = var_score.sort_values(ascending=False).iloc[:num_genes].index
+    data = data = np.c_[var_score.loc[index].values, tp10k_mean.loc[index].values]
+    columns = ['CV', 'Mean expression (TP10K)']
+    var_genes = pd.DataFrame(data, index=index, columns=columns).copy()
+
+    selected = cv.index.isin(var_genes.index)
+
+    data = []
+
+    # first, plot genes that *weren't* selected
+    x = tp10k_mean.loc[~selected].values
+    y = 100*cv.loc[~selected].values
+    text = mean.index[~selected].to_list()
+    trace = go.Scatter(
+        x=x,
+        y=y,
+        text=text,
+        name='Not selected',
+        mode='markers',
+        marker=dict(size=marker_size, opacity=0.7),
+    )
+    data.append(trace)
+
+    # next, plot genes that *were* selected
+    x = tp10k_mean.loc[selected].values
+    y = 100*cv.loc[selected].values
+    text = mean.index[selected].to_list()
+    trace = go.Scatter(
+        x=x,
+        y=y,
+        text=text,
+        name='Selected',
+        mode='markers',
+        marker=dict(size=marker_size, opacity=0.7),
+    )
+    data.append(trace)
+
+    yaxis_title = 'CV (%)'
+    layout = go.Layout(
+        width=800,
+        height=800,
+        font=dict(family='serif', size=32),
+        plot_bgcolor='white',
+        xaxis=dict(title='Mean expression (TP10K)', linecolor='black',
+                   ticks='outside', ticklen=5, type='log', dtick='D3'),
+        #yaxis=dict(title='Fano factor', linecolor='black', ticks='outside', ticklen=5),
+        yaxis=dict(title=yaxis_title, linecolor='black', ticks='outside',
+                   ticklen=5, type='log', dtick='D3'),
+        showlegend=False,
+    )
+
+    fig = go.Figure(data=data, layout=layout)
+
+    return var_genes, fig

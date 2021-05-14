@@ -10,7 +10,7 @@ import sys
 from contextlib import AbstractContextManager
 
 
-def configure_logger(name='', level=logging.INFO):
+def configure_logger(name='', level=logging.INFO, showtime=False):
     """Configure a root logger."""
 
     logger = logging.getLogger(name)
@@ -18,7 +18,10 @@ def configure_logger(name='', level=logging.INFO):
     logger.propagate = False
     logger.handlers = []
 
-    log_format = '[%(asctime)s] (%(name)s) %(levelname)s: %(message)s'
+    if showtime:
+        log_format = '[%(asctime)s] (%(name)s) %(levelname)s: %(message)s'
+    else:
+        log_format = '(%(name)s) %(levelname)s: %(message)s'
     log_date_format = '%Y-%m-%d %H:%M:%S'
     formatter = logging.Formatter(log_format, log_date_format)
 

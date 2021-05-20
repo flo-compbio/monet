@@ -28,7 +28,7 @@ class PCAModel:
 
     PICKLE_PROTOCOL_VERSION = 4  # requires Python 3.4 or higher
 
-    def __init__(self, num_components=30,
+    def __init__(self, num_components=50,
                  transcript_count: Union[float, int] = None,
                  transform_name: str = 'freeman-tukey',
                  svd_solver = 'randomized',

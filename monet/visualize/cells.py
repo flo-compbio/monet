@@ -99,6 +99,9 @@ def plot_cells(
     if height is None:
         height = 750
 
+    cell_indices = pd.Series(
+        index=scores.index, data=np.arange(scores.shape[0]))
+
     num_cells = scores.shape[0]
 
     if cell_labels is None:
@@ -147,6 +150,7 @@ def plot_cells(
 
         if labelcells:
             text = sel_scores.index.tolist()
+            text = ['%s (%d)' % (t, cell_indices.loc[t]) for t in text]
         else:
             text = None
 

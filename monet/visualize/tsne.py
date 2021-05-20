@@ -141,7 +141,7 @@ def batch_corrected_tsne_plot(
 
     The PC scores for the target cells are the batch-corrected scores. The PC
     scores for the reference cells are simply the scores obtained by applying
-    the Monet model.
+    the PCA model.
     """
 
     if tsne_kwargs is None:

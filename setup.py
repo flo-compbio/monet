@@ -8,7 +8,7 @@ from os import path
 
 root = 'monet'
 name = 'monet'
-version = '0.3.0'
+version = '0.3.1'
 
 here = path.abspath(path.dirname(__file__))
 description = ('Monet: An open-source Python package for analyzing and '
@@ -107,6 +107,7 @@ setup(
         'monet': [
             'data/gene_lists/*.txt',
             'data/test/*',
+            'data/RdBu_r_colormap.tsv',
         ]
     },
 

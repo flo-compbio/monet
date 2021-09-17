@@ -124,7 +124,9 @@ def preprocess_data(
     gc.collect()
 
     # shuffle cells
-    matrix = matrix.sample(axis=1, frac=1.0, replace=False, random_state=seed)
+    if sel_cells is None:
+        matrix = matrix.sample(
+            axis=1, frac=1.0, replace=False, random_state=seed)
     gc.collect()
 
     data = {

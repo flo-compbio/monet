@@ -95,7 +95,9 @@ def ma_plot(matrix, cluster1_cells, cluster2_cells, low_thresh=0.10,
 
 def ref_ma_plot(
         ref_matrix: ExpMatrix, comp_matrix: ExpMatrix,
-        low_thresh=0.10, min_thresh = 0.01, title=None) \
+        low_thresh=0.10, min_thresh = 0.01, title=None,
+        highlight_genes: Iterable[str] = None,
+        reverse_fc: bool = False) \
             -> Tuple[go.Figure, pd.DataFrame]:
     """Asymmetrical MA plot to compare a treatment condition to a control.
 
@@ -128,6 +130,8 @@ def ref_ma_plot(
     comp_thresh.loc[comp_thresh < low_thresh] = low_thresh
 
     fc = comp_thresh / ref_thresh
+    if reverse_fc:
+        fc = 1/fc
     mean = ref_mean
 
     # create DataFrame with values
@@ -158,6 +162,25 @@ def ref_ma_plot(
     )
 
     data = [bgline, trace]
+
+    if highlight_genes is not None:
+        not_found = [g for g in highlight_genes if g not in fc.index]
+        if not_found:
+            _LOGGER.warning('Highlight genes not found: %s',
+                            ', '.join(not_found))
+        highlight_genes = fc.index & highlight_genes
+
+        x = mean.loc[highlight_genes].values
+        y = np.log2(fc.loc[highlight_genes].values)
+        text = fc.loc[highlight_genes].index.to_list()
+        trace = go.Scatter(
+            x=x,
+            y=y,
+            text=text,
+            mode='markers',
+            marker=dict(size=5, color='red'),
+        )
+        data.append(trace)
 
     layout = go.Layout(
         width=900,

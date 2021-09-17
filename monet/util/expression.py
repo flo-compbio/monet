@@ -126,7 +126,7 @@ def ft_transform(matrix: ExpMatrix) -> ExpMatrix:
 
 
 def pearson_transform(
-        matrix: ExpMatrix, min_exp_thresh: float = 0.01) -> ExpMatrix:
+        matrix: ExpMatrix, min_exp_thresh: float = 0.001) -> ExpMatrix:
     """Uses pearson residuals to stabilize variance."""
 
     invalid_errstate = 'warn'

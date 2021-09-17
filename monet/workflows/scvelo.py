@@ -20,6 +20,7 @@ def scvelo(data: Union[VelocytoData, str],
            cluster_order = None, cluster_colors = None,
            cluster_labels = None,
            umap_scores: pd.DataFrame = None, umap_num_neighbors: int = 30,
+           axis_labels = None,
            umap_seed: int = 0,
            title: str = None) -> None:
     """Modified scVelo workflow."""
@@ -58,7 +59,10 @@ def scvelo(data: Union[VelocytoData, str],
 
     else:
         # use UMAP result stored in AnnData object
-        columns = ['UMAP dim. 1', 'UMAP dim. 2']
+        if axis_labels is not None:
+            columns = axis_labels
+        else:
+            columns = ['UMAP dim. 1', 'UMAP dim. 2']
         umap_scores = pd.DataFrame(
             adata.obsm['X_umap'], index=adata.obs_names, columns=columns)
 

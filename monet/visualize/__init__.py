@@ -7,5 +7,6 @@ from .util import *
 from .cells import *
 from .tsne import *
 from .umap import *
+from .force import *
 from .genes import *
 from .heatmap import *

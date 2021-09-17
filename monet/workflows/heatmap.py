@@ -187,7 +187,7 @@ def singlecell_heatmap(
         raw_matrix: ExpData,
         denoised_matrix: ExpData,
         cell_labels: LabelData = None,
-        marker_genes: Iterable[str] = None, cluster_marker_genes: bool = True,
+        marker_genes: Iterable[str] = None, cluster_marker_genes: bool = False,
         marker_height: float = 0.15,
         marker_label: str = None,
         markers_always_raw: bool = False,
@@ -202,7 +202,7 @@ def singlecell_heatmap(
         annotation_height: int = 30,
         zmin: float = -3.0, zmax: float = 3.0,
         max_cells: int = 2000, seed: int = 0,
-        annotation_label: str = 'Clustering',
+        annotation_label: str = 'Annotations',
         colorbar_label: str = None,
         colorscheme: str = 'plotly') -> \
             Tuple[go.Figure, go.Figure, ExpMatrix, ExpMatrix]:

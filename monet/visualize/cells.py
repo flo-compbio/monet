@@ -218,7 +218,8 @@ def plot_cells(
     if cell_labels is not None and showlabels:
 
         for cluster in cluster_order:
-            if cluster == 'Outliers' or cluster == 'Doublets':
+            if cluster == 'Outliers' or cluster == 'Doublets' \
+                    or cluster == 'Other':
                 continue
 
             pos = scores.loc[internal_cell_labels == cluster].median(axis=0)
